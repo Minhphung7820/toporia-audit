@@ -8,37 +8,40 @@ Audit logging for Toporia Framework.
 composer require toporia/audit
 ```
 
-## Setup
+## Auto-Discovery
 
-### 1. Register Service Provider
+This package uses Toporia's **Package Auto-Discovery** system. After installation:
 
-Add to `bootstrap/app.php` or `App/Infrastructure/Providers/AppServiceProvider.php`:
+- **Service Provider** is automatically registered - no manual registration required
+- **Configuration** is automatically discovered from `extra.toporia.config` in composer.json
+- **Migrations** are automatically included when running `php console migrate`
 
-```php
-// bootstrap/app.php - trong RegisterProviders::bootstrap()
-$app->registerProviders([
-    // ... other providers
-    \Toporia\Audit\AuditServiceProvider::class,
-]);
+To rebuild the package manifest manually:
 
-// Hoặc trong AppServiceProvider
-public function register(ContainerInterface $container): void
-{
-    $container->register(\Toporia\Audit\AuditServiceProvider::class);
-}
+```bash
+php console package:discover
 ```
 
-### 2. Run Migration
+## Setup
+
+### 1. Run Migrations
 
 ```bash
 php console migrate
 ```
 
-Migration file: `database/migrations/2025_12_14_000001_CreateAuditLogsTable.php`
-
-### 3. Publish Config (optional)
+Package migrations are automatically discovered and included.
+To skip package migrations:
 
 ```bash
+php console migrate --no-packages
+```
+
+### 2. Publish Config (optional)
+
+```bash
+php console vendor:publish --provider="Toporia\Audit\AuditServiceProvider"
+# Or with tag
 php console vendor:publish --tag=audit-config
 ```
 
